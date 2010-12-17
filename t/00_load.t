@@ -1,18 +1,19 @@
-BEGIN { $| = 1; print "1..1\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use strict;
+use Test::More;
+BEGIN { plan tests => 2 }
 
 BEGIN { $ENV{PERL_JSON_BACKEND} = 0; }
 
-use JSON::PP::Compat;
-if ($] >= 5.005 && $] < 5.006) {
-  require JSON::PP5005;
+require_ok("JSON::PP::Compat");
+if ($] lt '5.006') {
+  ok( defined $INC{'JSON/PP5005.pm'}, 'JSON::PP5005 is loaded' );
 }
-elsif ($] >= 5.006 && $] < 5.008) {
-  require JSON::PP56;
+elsif ($] lt '5.008') {
+  ok( defined $INC{'JSON/PP56.pm'}, 'JSON::PP56 is loaded' );
 }
-elsif ($] >= 5.008) {
-  require JSON::PP58;
+else {
+  ok( !exists $INC{'JSON/PP5005.pm'} && !exists $INC{'JSON/PP56.pm'},
+    "Neither helper loaded for Perl $]"
+  );
 }
 
-$loaded = 1;
-print "ok 1\n";

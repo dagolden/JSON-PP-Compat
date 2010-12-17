@@ -3,6 +3,16 @@ use 5.005;
 $JSON::PP::Compat::VERSION = '2.00';
 use strict;
 
+my $helper =  $] lt '5.006' ? 'JSON::PP5005'
+           :  $] lt '5.008' ? 'JSON::PP56'
+           :  q{}
+           ;
+
+if ( $helper ) {
+  eval qq| require $helper |;
+  die $@ if $@;
+}
+
 1;
 __END__
 
